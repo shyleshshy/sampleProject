@@ -22,3 +22,8 @@ Modeules used.
 ->mongoose
 ->multer
 ->sharp
+
+
+Setting up steps:
+--> perform $ npm install
+--> Create a db named "Project"
