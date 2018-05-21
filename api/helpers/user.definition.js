@@ -1,0 +1,24 @@
+
+module.exports.definition={
+    name:{
+        type:String
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    password:{
+        type:String,
+        required:true
+    },
+    status:{
+        type:String,
+        enum:["ACTIVE","INACTIVE"],
+        default:"ACTIVE"
+    },
+    deleted:{
+        type:Boolean,
+        default:false
+    }
+}

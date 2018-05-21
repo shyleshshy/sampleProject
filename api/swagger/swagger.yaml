@@ -1,0 +1,474 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Hello World App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - multipart/form-data
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+  - text/plain
+paths:
+  /v1/upload:
+    x-swagger-router-controller:  controller
+    post:
+      consumes:
+        - multipart/form-data
+      description: Endpoint to upload files in multipart format
+      operationId:  v1_upload
+      parameters:
+        - name: file
+          in: formData
+          type: file
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+            # a pointer to a definition
+              responseBody:
+                $ref: "#/definitions/UploadInstanceResponse"
+        "207":
+          description: Success
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        # responses may fall through to errors
+        default:
+          description: Error 
+  /v1/image/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    get:
+      description: download the image
+      operationId: v1_download
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: id of the image
+      responses:
+        200:
+          description: OK
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/user:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    post:
+      description: create user
+      operationId: v1_createUser
+      parameters:
+        - name: data
+          in: body
+          schema:
+            $ref: "#/definitions/userInstance"
+      responses:
+        200:
+          description: item Created Successfully 
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/userInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/user/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    put:
+      description: update the user
+      operationId: v1_updateUser
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: id of the user
+        - name: data
+          in: body
+          schema:
+            $ref: "#/definitions/userInstance"
+          description: item updated 
+      responses:
+        200:
+          description: updated item
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/itemInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/user/activate/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    put:
+      description: update the user status
+      operationId: v1_activateUser
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: id of the user
+      responses:
+        200:
+          description: updated item
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/itemInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/user/deactivate/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    put:
+      description: update the user status
+      operationId: v1_deActivateUser
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: id of the user
+      responses:
+        200:
+          description: updated item
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/validate:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    post:
+      description: update the user status
+      operationId: v1_login
+      parameters:
+        - name: data
+          in: body
+          required  : true
+          schema:
+            $ref: "#/definitions/userInstance"
+      responses:
+        200:
+          description: updated item
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/item:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    get:
+      description: Retrive a list of items
+      operationId: v1_itemList
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          description: Page number of the request
+        - name: count
+          in: query
+          type: integer
+          description: Number of accounts per page 
+        - name: filter
+          in: query
+          type: string
+        - name: select
+          in: query
+          type: string
+        - name : sort
+          in : query
+          type : string
+      responses:
+        200:
+          description: item Lists
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/itemInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: List Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: create an item
+      operationId: v1_itemCreate
+      parameters:
+        - name: data
+          in: body
+          schema:
+            $ref: "#/definitions/itemInstance"
+      responses:
+        200:
+          description: item Created Successfully 
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/itemInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: Not Found
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /v1/item/{id}:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: controller
+    get:
+      description: get item by id
+      operationId: v1_singleItem
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: single item 
+      responses:
+        200:
+          description: updated item
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/itemInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      description: update the item
+      operationId: v1_itemUpdate
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: id of the item
+        - name: data
+          in: body
+          schema:
+            $ref: "#/definitions/itemInstance"
+          description: item updated 
+      responses:
+        200:
+          description: updated item
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+              responseBody:
+                $ref: "#/definitions/itemInstance"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: delete the item
+      operationId: v1_itemDelete
+      parameters:
+        - name: id
+          in: path
+          type: string 
+          required : true
+          description: id of the item
+      responses:
+        200:
+          description: item deleted
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        207:
+          description: Bad parameters
+          schema:
+            properties:
+              status:
+                $ref: "#/definitions/CommonResponse"
+        404:
+          description: No transaction available with the given parameter set.
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Internal server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  HelloWorldResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  CommonResponse:
+    properties:
+      code:
+        type: number
+      message:
+        type: string
+    required:
+      - code
+      - message
+  itemInstance :
+    properties :
+      name :  { type : string }
+      item_code : { type : string }
+      price : { type : number }
+      image : { type : string }
+  userInstance :
+    properties :
+      email :  { type : string }
+      password : { type : string }
+  UploadInstanceResponse:
+    properties:
+      id: {type : string}
